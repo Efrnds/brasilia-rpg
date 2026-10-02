@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#243d33" />
+    <meta
+      name="description"
+      content="Um RPG 3D satírico em Brasília. Investigue o desaparecimento do café."
+    />
+    <title>Brasília: O Último Debate</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <canvas
+      id="world"
+      aria-label="Mundo 3D de Brasília: O Último Debate"
+      tabindex="-1"
+    ></canvas>
+    <div id="loading" class="loading">
+      <span class="loading-mark">B.</span>
+      <p>Preparando a pauta…</p>
+    </div>
+    <main id="menu" class="overlay menu hidden">
+      <div class="edition">
+        <span>BRASÍLIA / DISTRITO FANTÁSTICO</span><span>TRÊS CAPÍTULOS</span>
+      </div>
+      <div class="menu-layout">
+        <section class="title-block">
+          <p class="eyebrow">UMA CRISE DE PROPORÇÕES CAFEINADAS</p>
+          <h1>
+            BRASÍLIA<span
+              >O ÚLTIMO<br />DEBATE<span class="title-dot">.</span></span
+            >
+          </h1>
+          <p class="intro">
+            O café sumiu. A papelada ganhou vida.<br />E alguém vai ter que
+            resolver essa pauta.
+          </p>
+          <div class="menu-actions">
+            <button id="new-game" class="primary">
+              Abrir investigação <span class="button-key">ENTER</span>
+            </button>
+            <button id="continue-game" class="secondary" disabled>
+              Continuar do checkpoint
+            </button>
+            <button id="training-start" class="secondary">
+              Pátio de treino
+            </button>
+            <div class="inline-actions">
+              <button id="menu-settings" class="text-button">
+                Configurações</button
+              ><button id="menu-help" class="text-button">Como jogar</button>
+            </div>
+          </div>
+          <p class="pc-note">PC + teclado e mouse. Jogo individual.</p>
+          <p id="save-message" class="save-message" role="status"></p>
+        </section>
+        <aside class="mission-note">
+          <div class="note-number">01 / OCORRÊNCIA</div>
+          <h2>O café<br />sumiu.</h2>
+          <p>
+            37 pacotes desaparecidos.<br />Nenhum setor responsável.<br />Absolutamente
+            típico.
+          </p>
+          <div class="stamp">INVESTIGAÇÃO ABERTA</div>
+        </aside>
+      </div>
+      <footer class="menu-footer">
+        <span>Uma paródia fictícia dos corredores do poder.</span
+        ><span>RPG DE AÇÃO • v0.6</span>
+      </footer>
+    </main>
+    <section
+      id="selection"
+      class="overlay paper-screen hidden"
+      aria-labelledby="selection-title"
+    >
+      <div class="paper selection-paper">
+        <p class="eyebrow">QUEM VAI RESOLVER ESSA?</p>
+        <h2 id="selection-title">Escolha seu protagonista.</h2>
+        <p>Mesmo mistério. Jeitos bem diferentes de encarar a papelada.</p>
+        <div class="character-options">
+          <button
+            class="character-option"
+            data-character="luli"
+            aria-pressed="true"
+          >
+            <span class="portrait portrait-luli"
+              ><span class="portrait-head"
+                ><i></i><i></i><b class="beard"></b></span
+              ><span class="portrait-body"></span></span
+            ><span class="character-copy"
+              ><strong>Luli</strong><span>Bardo Sindical</span
+              ><small>Discurso em área, cura e controle.</small></span
+            ><span class="pick-mark">SELECIONADO</span></button
+          ><button
+            class="character-option"
+            data-character="folfonaro"
+            aria-pressed="false"
+          >
+            <span class="portrait portrait-folfonaro"
+              ><span class="portrait-head"
+                ><i></i><i></i><b class="hair"></b></span
+              ><span class="portrait-body"></span></span
+            ><span class="character-copy"
+              ><strong>Folfonaro</strong><span>Paladino do Zap</span
+              ><small>Avanço, proteção e impacto.</small></span
+            ><span class="pick-mark">SELECIONADO</span>
+          </button>
+        </div>
+        <div class="paper-footer">
+          <button id="select-back" class="secondary">Voltar</button
+          ><button id="start-game" class="primary">Chegar a Brasília</button>
+        </div>
+        <p class="fine-print">
+          Personagens e falas ficcionais. A escolha não determina seu desfecho.
+        </p>
+      </div>
+    </section>
+    <div id="hud" class="hidden">
+      <div class="quest-panel">
+        <p class="eyebrow" id="quest-chapter">01 / O CORREDOR DAS EMENDAS</p>
+        <h2 id="objective"></h2>
+        <p id="optional-objective"></p>
+      </div>
+      <div class="hud-tools">
+        <button id="journal-button">Diário <kbd>J</kbd></button
+        ><button id="pause-button">Pausa <kbd>ESC</kbd></button>
+      </div>
+      <div class="minimap-wrap">
+        <canvas
+          id="minimap"
+          width="150"
+          height="170"
+          aria-label="Mapa: amarelo indica o objetivo, branco indica você"
+        ></canvas
+        ><span id="map-area">PRAÇA DO CAFEZINHO</span>
+      </div>
+      <div id="boss-bar" class="boss-bar hidden">
+        <span id="enemy-title">O CENTRÃO</span>
+        <div class="meter"><div id="enemy-hp"></div></div>
+        <small id="enemy-warning"></small>
+      </div>
+      <div class="player-panel">
+        <p>
+          <strong id="player-name"></strong
+          ><span id="player-level">NÍVEL 1</span>
+        </p>
+        <div class="bar-label"><span>VIDA</span><span id="hp-text"></span></div>
+        <div class="meter"><div id="hp-fill"></div></div>
+        <div class="bar-label">
+          <span>FÔLEGO</span><span id="stamina-text"></span>
+        </div>
+        <div class="meter stamina"><div id="stamina-fill"></div></div>
+        <div class="polarization">
+          <span>Polarização</span><strong id="pol-text"></strong>
+          <div class="pol-track"><i id="pol-fill"></i></div>
+        </div>
+      </div>
+      <div class="action-dock">
+        <div id="skill-buttons" class="skill-buttons"></div>
+        <p class="combat-controls">
+          <span><kbd>WASD</kbd> mover</span><span><kbd>CLIQUE</kbd> atacar</span
+          ><span><kbd>DIREITO</kbd> defender</span
+          ><span><kbd data-action-key="dodge">ESPAÇO</kbd> esquivar</span>
+        </p>
+      </div>
+      <div id="interaction" class="interaction hidden">
+        <kbd data-action-key="interact">E</kbd><span></span
+        ><button id="interact-button">Interagir</button>
+      </div>
+      <div
+        id="toast"
+        class="toast hidden"
+        role="status"
+        aria-live="polite"
+      ></div>
+      <div id="tutorial-panel" class="tutorial-panel hidden">
+        <p id="tutorial-text"></p>
+        <button id="tutorial-skip">Já conheço os controles</button>
+      </div>
+      <div id="training-tools" class="training-tools hidden">
+        <button id="training-reset">Repor alvos</button>
+        <button id="training-enemies">Ativar adversários</button>
+        <button id="training-character">Trocar protagonista</button>
+      </div>
+      <div
+        id="hit-feedback"
+        class="hit-feedback hidden"
+        aria-hidden="true"
+      ></div>
+      <div id="damage-flash" class="damage-flash"></div>
+      <div
+        id="combat-caption"
+        class="combat-caption hidden"
+        aria-live="polite"
+      ></div>
+      <div class="crosshair" aria-hidden="true"></div>
+    </div>
+    <section
+      id="dialogue"
+      class="overlay dialogue-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="speaker-name"
+    >
+      <div class="paper dialogue-paper">
+        <p class="eyebrow" id="speaker-role"></p>
+        <h2 id="speaker-name"></h2>
+        <p id="dialogue-text"></p>
+        <div id="dialogue-choices" class="dialogue-choices"></div>
+        <span class="fine-print">O mundo está pausado durante a conversa.</span>
+      </div>
+    </section>
+    <section
+      id="pause"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pause-title"
+    >
+      <div class="paper compact-paper">
+        <p class="eyebrow">INTERVALO DA SESSÃO</p>
+        <h2 id="pause-title">Pode respirar.</h2>
+        <p>Checkpoints são salvos automaticamente ao avançar na missão.</p>
+        <button id="resume-game" class="primary">Voltar à investigação</button
+        ><button id="pause-settings" class="secondary">Configurações</button
+        ><button id="pause-help" class="secondary">Controles</button
+        ><button id="export-save" class="secondary">Exportar checkpoint</button
+        ><button id="import-save" class="secondary">Importar checkpoint</button
+        ><button id="return-menu" class="text-button">Voltar ao menu</button>
+        <p id="pause-save-status" class="fine-print" role="status"></p>
+      </div>
+    </section>
+    <section
+      id="settings"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-title"
+    >
+      <div class="paper compact-paper">
+        <p class="eyebrow">AJUSTES DE GABINETE</p>
+        <h2 id="settings-title">Do seu jeito.</h2>
+        <label
+          >Volume dos efeitos <output id="volume-value">35%</output
+          ><input
+            id="volume"
+            type="range"
+            min="0"
+            max="100"
+            value="35" /></label
+        ><label
+          >Sensibilidade da câmera <output id="sensitivity-value">50%</output
+          ><input
+            id="sensitivity"
+            type="range"
+            min="10"
+            max="100"
+            value="50" /></label
+        ><label
+          >Ritmo de combate<select id="difficulty">
+            <option value="normal">Normal</option>
+            <option value="relaxed">Tranquilo (menos dano recebido)</option>
+          </select></label
+        ><label
+          >Qualidade gráfica
+          <select id="quality">
+            <option value="performance">Desempenho (sem sombras)</option>
+            <option value="balanced">Equilibrada</option>
+            <option value="quality">Resolução maior</option>
+          </select> </label
+        ><label class="check-label"
+          ><input id="reduced-motion" type="checkbox" />Reduzir balanço e
+          animações</label
+        ><button id="fullscreen" class="secondary">Alternar tela cheia</button
+        ><button id="settings-back" class="primary">Pronto</button>
+        <p class="fine-print">Configurações salvas neste navegador.</p>
+      </div>
+    </section>
+    <section
+      id="help"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="help-title"
+    >
+      <div class="paper compact-paper">
+        <p class="eyebrow">MANUAL DO ASSESSOR</p>
+        <h2 id="help-title">Uma pauta de cada vez.</h2>
+        <dl class="control-list">
+          <div>
+            <dt>W A S D</dt>
+            <dd>Andar em relação à câmera</dd>
+          </div>
+          <div>
+            <dt>Mouse / setas</dt>
+            <dd>Girar a câmera</dd>
+          </div>
+          <div>
+            <dt>Clique esquerdo / F</dt>
+            <dd>Ataque básico</dd>
+          </div>
+          <div>
+            <dt>Clique direito / Q</dt>
+            <dd>Defender de frente</dd>
+          </div>
+          <div>
+            <dt>Espaço</dt>
+            <dd>Esquivar (custa fôlego)</dd>
+          </div>
+          <div>
+            <dt>1 · 2 · 3 · 4</dt>
+            <dd>Usar habilidades</dd>
+          </div>
+          <div>
+            <dt>E / J / Esc</dt>
+            <dd>Interagir / diário / pausa</dd>
+          </div>
+        </dl>
+        <p>
+          A área vermelha anuncia um ataque. Saia dela, esquive ou defenda
+          olhando para o inimigo. Cura tem três cargas; o ultimate tem um uso
+          por encontro.
+        </p>
+        <p class="fine-print">
+          Clique no cenário para controlar a câmera. Esc libera o mouse. Também
+          é possível arrastar o mouse no cenário.
+        </p>
+        <button id="help-back" class="primary">Entendi a pauta</button>
+      </div>
+    </section>
+    <section
+      id="journal"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="journal-title"
+    >
+      <div class="paper journal-paper">
+        <p class="eyebrow">DIÁRIO DE INVESTIGAÇÃO</p>
+        <h2 id="journal-title">O café sumiu.</h2>
+        <p id="journal-current"></p>
+        <ol id="journal-steps"></ol>
+        <h3>Na sua pasta</h3>
+        <p id="inventory-text"></p>
+        <p id="journal-build"></p>
+        <button id="journal-back" class="primary">Fechar a pasta</button>
+      </div>
+    </section>
+    <section
+      id="upgrade"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-title"
+    >
+      <div class="paper compact-paper">
+        <p class="eyebrow" id="upgrade-chapter">NÍVEL 2 / PAUTA RESOLVIDA</p>
+        <h2 id="upgrade-title">Uma pequena vantagem.</h2>
+        <p>A melhoria se acumula e acompanha você nos próximos capítulos.</p>
+        <button id="upgrade-vitality" class="upgrade-option">
+          <strong>Garrafa térmica</strong
+          ><span>+25 de vida máxima.</span></button
+        ><button id="upgrade-power" class="upgrade-option">
+          <strong>Microfone de gabinete</strong
+          ><span>+25% de dano base em ataques e habilidades.</span>
+        </button>
+      </div>
+    </section>
+    <section
+      id="defeat"
+      class="overlay modal-screen hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="defeat-title"
+    >
+      <div class="paper compact-paper">
+        <p class="eyebrow">SESSÃO INTERROMPIDA</p>
+        <h2 id="defeat-title">Venceu a papelada.</h2>
+        <p>
+          O estagiário já separou um copo d’água. Tente outra abordagem: espere
+          o sinal do ataque, esquive e responda na recuperação.
+        </p>
+        <button id="retry-game" class="primary">Voltar ao checkpoint</button
+        ><button id="defeat-menu" class="secondary">Voltar ao menu</button>
+      </div>
+    </section>
+    <section
+      id="interlude"
+      class="overlay paper-screen hidden"
+      aria-labelledby="interlude-title"
+    >
+      <div class="paper ending-paper">
+        <p class="eyebrow" id="interlude-chapter"></p>
+        <h2 id="interlude-title"></h2>
+        <p id="interlude-clue"></p>
+        <div class="next-chapter"><p id="interlude-text"></p></div>
+        <button id="next-chapter-button" class="primary">
+          Continuar a investigação</button
+        ><button id="interlude-menu" class="text-button">
+          Guardar a pasta e voltar ao menu
+        </button>
+        <p class="fine-print">
+          Checkpoint salvo. Suas provas e melhorias seguem com você.
+        </p>
+      </div>
+    </section>
+    <section
+      id="ending"
+      class="overlay paper-screen hidden"
+      aria-labelledby="ending-title"
+    >
+      <div class="paper ending-paper">
+        <p class="eyebrow">INVESTIGAÇÃO ENCERRADA / TRÊS CAPÍTULOS</p>
+        <div class="ending-seal" aria-hidden="true">CAFÉ<br />RECUPERADO</div>
+        <h2 id="ending-title">A pauta agora é outra.</h2>
+        <p id="ending-text"></p>
+        <div id="ending-stats" class="ending-stats"></div>
+        <p id="ending-route" class="fine-print"></p>
+        <button id="ending-menu" class="primary">Voltar ao gabinete</button>
+      </div>
+    </section>
+    <section id="error" class="overlay modal-screen hidden" role="alert">
+      <div class="paper compact-paper">
+        <p class="eyebrow">A SESSÃO NÃO ABRIU</p>
+        <h2>Não foi possível iniciar o 3D.</h2>
+        <p id="error-message">
+          Verifique se a aceleração gráfica está habilitada no navegador.
+        </p>
+        <button id="reload" class="primary">Tentar novamente</button>
+      </div>
+    </section>
+    <input id="save-file" type="file" accept="application/json,.json" hidden />
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

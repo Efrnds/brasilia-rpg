@@ -1,0 +1,179 @@
+{
+  "license": "CC0-1.0",
+  "author": "Oficina local",
+  "sampleRate": 22050,
+  "channels": 1,
+  "normalization": "pico abaixo de -1 dBFS",
+  "effects": {
+    "bossWarn1": {
+      "file": "bossWarn1.wav",
+      "duration": 0.25,
+      "type": "square"
+    },
+    "bossWarn2": {
+      "file": "bossWarn2.wav",
+      "duration": 0.25,
+      "type": "triangle"
+    },
+    "bossWarn3": {
+      "file": "bossWarn3.wav",
+      "duration": 0.3,
+      "type": "sawtooth"
+    },
+    "swing": {
+      "file": "swing.wav",
+      "duration": 0.09,
+      "type": "triangle"
+    },
+    "hit": {
+      "file": "hit.wav",
+      "duration": 0.11,
+      "type": "sawtooth"
+    },
+    "paper": {
+      "file": "paper.wav",
+      "duration": 0.09,
+      "type": "triangle"
+    },
+    "metal": {
+      "file": "metal.wav",
+      "duration": 0.16,
+      "type": "square"
+    },
+    "body": {
+      "file": "body.wav",
+      "duration": 0.12,
+      "type": "triangle"
+    },
+    "block": {
+      "file": "block.wav",
+      "duration": 0.13,
+      "type": "triangle"
+    },
+    "hurt": {
+      "file": "hurt.wav",
+      "duration": 0.22,
+      "type": "triangle"
+    },
+    "dodge": {
+      "file": "dodge.wav",
+      "duration": 0.1,
+      "type": "sine"
+    },
+    "talk": {
+      "file": "talk.wav",
+      "duration": 0.055,
+      "type": "sine"
+    },
+    "pickup": {
+      "file": "pickup.wav",
+      "duration": 0.28,
+      "type": "triangle"
+    },
+    "skill": {
+      "file": "skill.wav",
+      "duration": 0.3,
+      "type": "triangle"
+    },
+    "warn": {
+      "file": "warn.wav",
+      "duration": 0.2,
+      "type": "square"
+    },
+    "warnLine": {
+      "file": "warnLine.wav",
+      "duration": 0.18,
+      "type": "square"
+    },
+    "warnWave": {
+      "file": "warnWave.wav",
+      "duration": 0.3,
+      "type": "triangle"
+    },
+    "win": {
+      "file": "win.wav",
+      "duration": 0.65,
+      "type": "triangle"
+    },
+    "stepStone": {
+      "file": "stepStone.wav",
+      "duration": 0.045,
+      "type": "triangle"
+    },
+    "stepWood": {
+      "file": "stepWood.wav",
+      "duration": 0.04,
+      "type": "square"
+    },
+    "stepMetal": {
+      "file": "stepMetal.wav",
+      "duration": 0.06,
+      "type": "triangle"
+    },
+    "stepGrass": {
+      "file": "stepGrass.wav",
+      "duration": 0.045,
+      "type": "sine"
+    },
+    "confirm": {
+      "file": "confirm.wav",
+      "duration": 0.08,
+      "type": "sine"
+    },
+    "cancel": {
+      "file": "cancel.wav",
+      "duration": 0.07,
+      "type": "sine"
+    },
+    "door": {
+      "file": "door.wav",
+      "duration": 0.15,
+      "type": "sawtooth"
+    },
+    "repair": {
+      "file": "repair.wav",
+      "duration": 0.14,
+      "type": "triangle"
+    }
+  },
+  "music": {
+    "1": {
+      "file": "theme-1.wav",
+      "duration": 4.8,
+      "loop": true,
+      "combatFile": "combat-1.wav",
+      "combatDuration": 2.4
+    },
+    "2": {
+      "file": "theme-2.wav",
+      "duration": 4.8,
+      "loop": true,
+      "combatFile": "combat-2.wav",
+      "combatDuration": 2.4
+    },
+    "3": {
+      "file": "theme-3.wav",
+      "duration": 4.8,
+      "loop": true,
+      "combatFile": "combat-3.wav",
+      "combatDuration": 2.4
+    }
+  },
+  "ambience": {
+    "1": {
+      "file": "ambience-1.wav",
+      "duration": 8,
+      "loop": true
+    },
+    "2": {
+      "file": "ambience-2.wav",
+      "duration": 8,
+      "loop": true
+    },
+    "3": {
+      "file": "ambience-3.wav",
+      "duration": 8,
+      "loop": true
+    }
+  }
+}

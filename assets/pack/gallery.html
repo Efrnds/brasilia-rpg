@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Oficina: pack de cenários</title
+  ><style>
+    body {
+      margin: 0;
+      background: #d6cbb6;
+      color: #29352d;
+      font: 16px system-ui;
+    }
+    header {
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      max-width: 340px;
+      padding: 16px;
+      background: #eee6d5;
+      max-height: 85vh;
+      overflow: auto;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0 0 8px;
+    }
+    p {
+      line-height: 1.5;
+    }
+    select,
+    button {
+      font: inherit;
+      padding: 10px;
+      border: 1px solid #566354;
+      background: #eee6d5;
+      color: inherit;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+    a {
+      color: inherit;
+    }
+  </style>
+  <header>
+    <h1>Oficina de cenários e personagens</h1>
+    <p>
+      Objetos, arquitetura, personagens e clips do jogo. Arraste para girar; use
+      a roda para aproximar. Escala em metros, origem no chão.
+    </p>
+    <select id="asset" aria-label="Modelo"></select>
+    <button id="export">Exportar JSON</button>
+    <button id="export-glb">Exportar GLB</button>
+    <label
+      >Pose
+      <select id="clip" aria-label="Animação"></select
+    ></label>
+    <label><input id="colliders" type="checkbox" /> Mostrar dimensões</label>
+    <p id="metadata"></p>
+    <p><a href="../../index.html">Voltar ao jogo</a></p>
+  </header>
+  <canvas id="view"></canvas>
+  <script type="module" src="./gallery.js"></script>
+</html>

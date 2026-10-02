@@ -1,0 +1,24 @@
+{
+  "name": "brasilia-o-ultimo-debate",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "assets:build": "node scripts/export-assets.js && node scripts/export-audio.js",
+    "preview": "node scripts/serve.js dist",
+    "test": "node --test tests/*.test.js",
+    "test:ui": "node tests/ui.integration.js",
+    "test:walk": "node tests/walking.integration.js",
+    "test:paths": "node tests/paths.integration.js",
+    "validate": "node scripts/validate-content.js",
+    "test:browser": "node tests/browser.integration.js",
+    "test:expansion": "node tests/expansion.integration.js",
+    "test:environment": "node tests/environment.integration.js"
+  },
+  "devDependencies": {
+    "happy-dom": "20.11.2",
+    "playwright-core": "1.56.1"
+  }
+}

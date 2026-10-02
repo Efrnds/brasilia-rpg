@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brasília: O Último Debate</title>
+  <style>
+    :root{
+      --bg:#10131a; --panel:#171b25; --panel2:#202637; --text:#f2f2f2;
+      --muted:#aab3c5; --accent:#ffd54a; --good:#66d17a; --bad:#ff6b6b;
+      --blue:#64b5f6; --purple:#b388ff;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:radial-gradient(circle at top,#1d2540 0,#10131a 45%,#090b10 100%);color:var(--text);font-family:"Courier New",monospace;min-height:100%}
+    body{display:flex;justify-content:center;padding:24px}
+    .game{width:min(980px,100%)}
+    .title{text-align:center;font-size:clamp(28px,5vw,54px);margin:8px 0 4px;text-shadow:3px 3px 0 #000}
+    .subtitle{text-align:center;color:var(--muted);margin-bottom:18px}
+    .screen{display:none;background:rgba(23,27,37,.96);border:3px solid #3b4357;border-radius:14px;box-shadow:0 18px 60px #0008;padding:20px}
+    .screen.active{display:block}
+    .pixel{image-rendering:pixelated}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    @media(max-width:720px){.grid2{grid-template-columns:1fr}.battle-grid{grid-template-columns:1fr!important}.stats-row{grid-template-columns:1fr!important}}
+    button{font:inherit;border:2px solid #59647d;border-radius:9px;background:#252c3d;color:#fff;padding:12px 14px;cursor:pointer;transition:.12s}
+    button:hover{transform:translateY(-1px);background:#30394f;border-color:#7f8cac}
+    button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .primary{background:#5d4fd1;border-color:#877aff;font-weight:bold}
+    .primary:hover{background:#6d5ee8}
+    .card{background:linear-gradient(180deg,#202638,#171b25);border:2px solid #3a435a;border-radius:12px;padding:16px}
+    .char-card{cursor:pointer;position:relative;overflow:hidden;min-height:270px}
+    .char-card:hover{border-color:var(--accent)}
+    .char-card.selected{outline:3px solid var(--accent)}
+    .avatar{height:110px;display:grid;place-items:center;font-size:72px;background:#0f1320;border-radius:8px;border:2px solid #353d52;margin-bottom:12px}
+    .char-name{font-size:22px;font-weight:bold;margin-bottom:4px}
+    .class{color:var(--accent);margin-bottom:12px}
+    .mini{font-size:13px;color:var(--muted);line-height:1.5}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .spread{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .meter{height:18px;background:#0f1219;border:2px solid #394155;border-radius:5px;overflow:hidden;position:relative}
+    .fill{height:100%;width:100%;transition:width .3s}
+    .hp{background:linear-gradient(90deg,#38b764,#75e08e)}
+    .pol{background:linear-gradient(90deg,#6bc7ff,#b986ff,#ff6b6b)}
+    .battle-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .fighter{text-align:center;position:relative}
+    .fighter .avatar{height:150px;font-size:90px}
+    .boss .avatar{background:linear-gradient(135deg,#29171c,#11151f)}
+    .status{min-height:22px;color:#ffd54a;font-size:13px}
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+    .action{text-align:left;min-height:76px}
+    .action b{display:block;color:#fff}.action small{color:#aab3c5}
+    .log{height:210px;overflow:auto;background:#0d1016;border:2px solid #30384b;border-radius:9px;padding:12px;line-height:1.45;font-size:14px}
+    .log p{margin:0 0 8px}.log .sys{color:#aab3c5}.log .hit{color:#ff9f9f}.log .heal{color:#8feb9f}.log .special{color:#ffd86d}
+    .badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#2b3346;color:#cbd4e5;font-size:12px}
+    .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+    .story{font-family:Georgia,serif;font-size:18px;line-height:1.65;background:#111723;border-left:5px solid var(--accent);padding:16px;border-radius:8px}
+    .story strong{color:#ffd86d}
+    .chapter{color:#9ab7ff;font-weight:bold;letter-spacing:1px}
+    .victory{text-align:center;padding:25px}
+    .victory h2{font-size:36px;color:#ffd86d}
+    .footer{text-align:center;color:#777f90;font-size:12px;margin-top:14px}
+    .shake{animation:shake .22s linear 1}.flash{animation:flash .3s linear 1}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+    @keyframes flash{50%{filter:brightness(2)}}
+    .crit{position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:26px;color:#ffd54a;font-weight:bold;text-shadow:2px 2px #000;animation:pop .6s forwards}
+    @keyframes pop{0%{opacity:0;transform:translate(-50%,20px) scale(.6)}30%{opacity:1;transform:translate(-50%,-8px) scale(1.2)}100%{opacity:0;transform:translate(-50%,-32px)}}
+  </style>
+</head>
+<body>
+  <main class="game">
+    <h1 class="title">🇧🇷 BRASÍLIA: O ÚLTIMO DEBATE</h1>
+    <div class="subtitle">RPG satírico fictício • protótipo v0.1</div>
+
+    <section id="menu" class="screen active">
+      <div class="story">
+        <span class="chapter">PRÓLOGO</span><br><br>
+        Uma força misteriosa chamada <strong>A Polarização</strong> está consumindo Brasília.
+        Para piorar, todo o café do Palácio desapareceu na mesma noite.
+        Sem cafeína, assessores já começaram a responder “vamos ver isso aí” para absolutamente tudo.
+        <br><br>
+        Sua missão: investigar o roubo, atravessar os corredores do poder e impedir o surgimento do lendário
+        <strong>Tio do Zap</strong>.
+      </div>
+      <div style="text-align:center;margin-top:18px"><button class="primary" onclick="go('select')">COMEÇAR A CAMPANHA</button></div>
+    </section>
+
+    <section id="select" class="screen">
+      <h2>Escolha seu personagem</h2>
+      <p class="mini">Os dois foram balanceados para o jogo. A escolha muda habilidades e diálogos, não a história política.</p>
+      <div class="grid2">
+        <div class="card char-card" id="pick-luli" onclick="pick('luli')">
+          <div class="avatar">🧔🏻‍♂️</div>
+          <div class="char-name">Luli</div>
+          <div class="class">Bardo Sindical</div>
+          <div class="mini">Especialista em moral, cura e discursos que alteram o ritmo da batalha.</div>
+          <hr style="border-color:#343d51">
+          <div class="mini">HP 100 • Força 7 • Carisma 10 • Defesa 7</div>
+        </div>
+        <div class="card char-card" id="pick-folfonaro" onclick="pick('folfonaro')">
+          <div class="avatar">🧑🏻‍✈️</div>
+          <div class="char-name">Folfonaro</div>
+          <div class="class">Paladino do Zap</div>
+          <div class="mini">Especialista em dano direto, provocação e efeitos caóticos.</div>
+          <hr style="border-color:#343d51">
+          <div class="mini">HP 110 • Força 9 • Carisma 8 • Defesa 6</div>
+        </div>
+      </div>
+      <div class="spread" style="margin-top:16px">
+        <button onclick="go('menu')">← VOLTAR</button>
+        <button id="confirmPick" class="primary" disabled onclick="startGame()">CONFIRMAR</button>
+      </div>
+    </section>
+
+    <section id="battle" class="screen">
+      <div class="spread"><div><span class="badge" id="chapterBadge">CAPÍTULO 1</span> <span id="battleTitle"></span></div><button onclick="resetGame()">Reiniciar</button></div>
+      <div class="stats-row" style="margin-top:14px">
+        <div class="card"><div class="spread"><b>Polarização Nacional</b><span id="polText">20/100</span></div><div class="meter"><div id="polFill" class="fill pol" style="width:20%"></div></div></div>
+        <div class="card"><div class="spread"><b>Turno</b><span id="turnText">1</span></div><div class="mini" id="objective">Derrote o inimigo.</div></div>
+      </div>
+      <div class="battle-grid">
+        <div class="card fighter" id="playerBox">
+          <div class="avatar" id="playerAvatar"></div>
+          <h2 id="playerName"></h2>
+          <div class="status" id="playerStatus"></div>
+          <div class="spread"><span>HP</span><span id="playerHpText"></span></div>
+          <div class="meter"><div id="playerHp" class="fill hp"></div></div>
+        </div>
+        <div class="card fighter boss" id="enemyBox">
+          <div class="avatar" id="enemyAvatar"></div>
+          <h2 id="enemyName"></h2>
+          <div class="status" id="enemyStatus"></div>
+          <div class="spread"><span>HP</span><span id="enemyHpText"></span></div>
+          <div class="meter"><div id="enemyHp" class="fill hp"></div></div>
+        </div>
+      </div>
+
+      <div class="actions" id="actions"></div>
+      <h3>📜 Diário da treta</h3>
+      <div id="log" class="log"></div>
+    </section>
+
+    <section id="interlude" class="screen">
+      <div class="story" id="interludeText"></div>
+      <div style="text-align:center;margin-top:18px"><button class="primary" id="continueBtn">CONTINUAR</button></div>
+    </section>
+
+    <section id="ending" class="screen victory">
+      <div style="font-size:80px">🏆</div>
+      <h2>CAFÉ RECUPERADO</h2>
+      <p id="endingText" class="story"></p>
+      <div class="row" style="justify-content:center;margin-top:18px"><button class="primary" onclick="resetGame()">JOGAR DE NOVO</button></div>
+    </section>
+
+    <div class="footer">Paródia fictícia. Não representa apoio, oposição ou avaliação política de pessoas reais.</div>
+  </main>
+
+<script>
+const chars = {
+  luli:{
+    name:'Luli', avatar:'🧔🏻‍♂️', maxHp:100, atk:12, def:7,
+    skills:[
+      {name:'Companheiros!', desc:'Dano leve e +8 HP.', dmg:[8,12], heal:8, pol:-4},
+      {name:'Discurso Infinito', desc:'Dano médio e reduz o próximo ataque inimigo.', dmg:[13,18], weaken:0.55, pol:5},
+      {name:'Cafezinho Diplomático', desc:'Cura bastante e reduz polarização.', heal:22, pol:-8},
+      {name:'Nunca Antes...', desc:'Ultimate: dano alto, 1 uso por batalha.', dmg:[25,34], ultimate:true, pol:10}
+    ]
+  },
+  folfonaro:{
+    name:'Folfonaro', avatar:'🧑🏻‍✈️', maxHp:110, atk:13, def:6,
+    skills:[
+      {name:'Tá OK?', desc:'Dano médio e provoca o inimigo.', dmg:[11,16], pol:3},
+      {name:'Motociata', desc:'Ataque rápido com chance alta de crítico.', dmg:[12,19], crit:.45, pol:7},
+      {name:'Live de Quinta', desc:'Cura um pouco; efeito aleatório.', heal:14, random:true, pol:4},
+      {name:'E Daí?', desc:'Ultimate: dano alto e limpa debuffs.', dmg:[26,33], cleanse:true, ultimate:true, pol:9}
+    ]
+  }
+};
+
+const battles = [
+  {
+    title:'O Corredor das Emendas', chapter:'CAPÍTULO 1', name:'O Centrão', avatar:'🐙', hp:88,
+    intro:'O chão treme. De trás de 14 portas surgem vários braços segurando planilhas, cargos e emendas.',
+    attacks:[
+      ['Emenda Relâmpago',10,16,3],['Toma Lá Dá Cá',12,18,5],['Comissão Especial',8,13,-2]
+    ]
+  },
+  {
+    title:'A Câmara dos Cortes', chapter:'CAPÍTULO 2', name:'Influencer Político', avatar:'📱', hp:105,
+    intro:'Um ring light acende sozinho. Um celulir flutua no ar. A live já começou e você nem aceitou os termos de uso.',
+    attacks:[
+      ['Corte Fora de Contexto',13,19,7],['Thumbnail com SETA VERMELHA',10,16,5],['Fonte: Confia',9,15,8]
+    ]
+  },
+  {
+    title:'O Grupo da Família', chapter:'BOSS FINAL', name:'Tio do Zap', avatar:'👴📲', hp:145,
+    intro:'“ENCAMINHADO MUITAS VEZES”. A tela pisca. O lendário Tio do Zap apareceu.',
+    attacks:[
+      ['Áudio de 7 Minutos',15,22,7],['Bom Dia com Flor',10,18,-3],['Encaminhar para 37 Grupos',18,25,10]
+    ]
+  }
+];
+
+let selected=null;
+let state={};
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function pick(id){
+  selected=id;
+  document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('pick-'+id).classList.add('selected');
+  document.getElementById('confirmPick').disabled=false;
+}
+
+function startGame(){
+  const c=chars[selected];
+  state={
+    char:selected, hp:c.maxHp, maxHp:c.maxHp, battleIndex:0, turn:1, polarization:20,
+    enemyHp:0, enemyMaxHp:0, weaken:1, enemyWeaken:1, ultUsed:false, locked:false
+  };
+  loadBattle();
+  go('battle');
+}
+
+function loadBattle(){
+  const b=battles[state.battleIndex];
+  state.enemyMaxHp=b.hp;
+  state.enemyHp=b.hp;
+  state.turn=1;
+  state.weaken=1;
+  state.enemyWeaken=1;
+  state.ultUsed=false;
+  state.locked=false;
+  document.getElementById('chapterBadge').textContent=b.chapter;
+  document.getElementById('battleTitle').textContent='— '+b.title;
+  document.getElementById('playerAvatar').textContent=chars[state.char].avatar;
+  document.getElementById('playerName').textContent=chars[state.char].name;
+  document.getElementById('enemyAvatar').textContent=b.avatar;
+  document.getElementById('enemyName').textContent=b.name;
+  document.getElementById('objective').textContent=state.battleIndex===2?'Recupere o café e sobreviva ao grupo da família.':'Derrote o inimigo e avance pela investigação.';
+  renderActions();
+  clearLog();
+  log('sys',b.intro);
+  if(state.battleIndex===0) log('special','Pista encontrada: há açúcar derramado no corredor. Suspeito demais.');
+  updateUI();
+}
+
+function renderActions(){
+  const wrap=document.getElementById('actions');
+  wrap.innerHTML='';
+  chars[state.char].skills.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='action';
+    btn.id='skill'+i;
+    btn.innerHTML=`<b>${i+1}. ${s.name}</b><small>${s.desc}</small>`;
+    btn.onclick=()=>useSkill(i);
+    wrap.appendChild(btn);
+  });
+}
+
+function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
+
+function useSkill(i){
+  if(state.locked) return;
+  const s=chars[state.char].skills[i];
+  if(s.ultimate && state.ultUsed){ log('sys','Ultimate já foi usado nesta batalha.'); return; }
+  state.locked=true;
+  setButtons(true);
+  let dealt=0;
+
+  if(s.dmg){
+    dealt=rnd(s.dmg[0],s.dmg[1]);
+    const crit=Math.random()<(s.crit||0.12);
+    if(crit){ dealt=Math.floor(dealt*1.65); popCrit('CRÍTICO!'); }
+    dealt=Math.max(1,Math.floor(dealt*state.enemyWeaken));
+    state.enemyHp=clamp(state.enemyHp-dealt,0,state.enemyMaxHp);
+    hitAnim('enemyBox');
+    log('hit',`${chars[state.char].name} usa ${s.name} e causa ${dealt} de dano.`);
+  }
+  if(s.heal){
+    const before=state.hp;
+    state.hp=clamp(state.hp+s.heal,0,state.maxHp);
+    log('heal',`Você recupera ${state.hp-before} HP.`);
+  }
+  if(s.weaken){ state.weaken=s.weaken; log('special','O próximo ataque inimigo perde força.'); }
+  if(s.cleanse){ state.weaken=1; log('special','Debuffs removidos.'); }
+  if(s.random){
+    const r=Math.random();
+    if(r<.33){ state.hp=clamp(state.hp+8,0,state.maxHp); log('special','A live rende um bônus inesperado: +8 HP.'); }
+    else if(r<.66){ state.enemyWeaken=.75; log('special','O chat entra em pane: seu próximo ataque recebe vantagem.'); }
+    else { state.polarization=clamp(state.polarization+8,0,100); log('special','A live viraliza. Polarização +8.'); }
+  }
+  if(s.ultimate) state.ultUsed=true;
+  state.polarization=clamp(state.polarization+(s.pol||0),0,100);
+  updateUI();
+
+  if(state.enemyHp<=0){ setTimeout(winBattle,500); return; }
+  setTimeout(enemyTurn,650);
+}
+
+function enemyTurn(){
+  const b=battles[state.battleIndex];
+  const a=b.attacks[rnd(0,b.attacks.length-1)];
+  let dmg=rnd(a[1],a[2]);
+  dmg=Math.max(1,Math.floor(dmg*state.weaken));
+  state.weaken=1;
+  if(state.polarization>=75) dmg=Math.floor(dmg*1.15);
+  state.hp=clamp(state.hp-dmg,0,state.maxHp);
+  state.polarization=clamp(state.polarization+a[3],0,100);
+  hitAnim('playerBox');
+  log('hit',`${b.name} usa ${a[0]} e causa ${dmg} de dano.`);
+  if(state.polarization>=90) log('special','⚠️ A polarização está em nível crítico: inimigos ficam mais agressivos.');
+  state.turn++;
+  updateUI();
+  if(state.hp<=0){ setTimeout(gameOver,450); return; }
+  state.locked=false;
+  setButtons(false);
+}
+
+function winBattle(){
+  state.locked=true;
+  setButtons(true);
+  const idx=state.battleIndex;
+  const texts=[
+    `<span class="chapter">FIM DO CAPÍTULO 1</span><br><br>O Centrão recua e deixa cair uma nota fiscal amassada: <strong>“37 pacotes de café — destino: sala de mídia”</strong>.<br><br>Você segue o cheiro de café requentado até o próximo andar.`,
+    `<span class="chapter">FIM DO CAPÍTULO 2</span><br><br>O Influencer derruba o celulir. No vídeo pausado aparece a pista final: alguém enviou a localização do café para um grupo chamado <strong>“FAMÍLIA 🇧🇷🙏 BOM DIA”</strong>.<br><br>Não há mais dúvidas. Você sabe onde procurar.`,
+    ''
+  ];
+  if(idx===2){ finishGame(); return; }
+  state.battleIndex++;
+  state.hp=clamp(state.hp+28,0,state.maxHp);
+  document.getElementById('interludeText').innerHTML=texts[idx]+`<br><br><strong>HP recuperado:</strong> +28`;
+  document.getElementById('continueBtn').onclick=()=>{ loadBattle(); go('battle'); };
+  go('interlude');
+}
+
+function gameOver(){
+  document.getElementById('interludeText').innerHTML=`<span class="chapter">DERROTA</span><br><br>Você foi derrotado no corredor do poder.<br><br>Um estagiário aparece, entrega um copo d'água e diz: <strong>“tenta de novo, chefe.”</strong>`;
+  document.getElementById('continueBtn').textContent='TENTAR A BATALHA NOVAMENTE';
+  document.getElementById('continueBtn').onclick=()=>{
+    state.hp=state.maxHp;
+    state.polarization=Math.max(20,state.polarization-20);
+    loadBattle();
+    document.getElementById('continueBtn').textContent='CONTINUAR';
+    go('battle');
+  };
+  go('interlude');
+}
+
+function finishGame(){
+  const p=state.polarization;
+  let ending='';
+  if(p<40){
+    ending='Você recupera o café sem transformar Brasília num grupo de família. O país ganha algumas horas de paz e alguém finalmente lê a mensagem fixada.';
+  } else if(p<75){
+    ending='O café foi recuperado. A polarização continua alta, mas ao menos todo mundo concorda em uma coisa: ninguém funciona sem cafeína.';
+  } else {
+    ending='O café foi recuperado, mas o Grupo da Família agora tem 386 mensagens não lidas. Você venceu a batalha; a guerra contra as notificações continua.';
+  }
+  document.getElementById('endingText').innerHTML=`${ending}<br><br><strong>Polarização final:</strong> ${p}/100<br><strong>Personagem:</strong> ${chars[state.char].name}`;
+  go('ending');
+}
+
+function updateUI(){
+  document.getElementById('playerHpText').textContent=`${state.hp}/${state.maxHp}`;
+  document.getElementById('enemyHpText').textContent=`${state.enemyHp}/${state.enemyMaxHp}`;
+  document.getElementById('playerHp').style.width=(state.hp/state.maxHp*100)+'%';
+  document.getElementById('enemyHp').style.width=(state.enemyHp/state.enemyMaxHp*100)+'%';
+  document.getElementById('polText').textContent=`${state.polarization}/100`;
+  document.getElementById('polFill').style.width=state.polarization+'%';
+  document.getElementById('turnText').textContent=state.turn;
+  document.getElementById('playerStatus').textContent=state.weaken<1?'Próximo dano recebido reduzido':'';
+  document.getElementById('enemyStatus').textContent=state.polarization>=90?'ENFURECIDO PELA POLARIZAÇÃO':'';
+  const u=chars[state.char].skills.findIndex(s=>s.ultimate);
+  if(u>=0 && document.getElementById('skill'+u)) document.getElementById('skill'+u).disabled=state.ultUsed||state.locked;
+}
+
+function setButtons(disabled){
+  document.querySelectorAll('.action').forEach((b,i)=>{
+    const s=chars[state.char].skills[i];
+    b.disabled=disabled || (s.ultimate && state.ultUsed);
+  });
+}
+
+function log(cls,msg){
+  const box=document.getElementById('log');
+  const p=document.createElement('p'); p.className=cls; p.textContent='› '+msg; box.appendChild(p); box.scrollTop=box.scrollHeight;
+}
+function clearLog(){ document.getElementById('log').innerHTML=''; }
+function hitAnim(id){ const e=document.getElementById(id); e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake'); }
+function popCrit(txt){ const box=document.getElementById('enemyBox'); const e=document.createElement('div'); e.className='crit'; e.textContent=txt; box.appendChild(e); setTimeout(()=>e.remove(),650); }
+function resetGame(){ selected=null; state={}; document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); document.getElementById('confirmPick').disabled=true; go('menu'); }
+
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('battle').classList.contains('active')) return;
+  const n=Number(e.key);
+  if(n>=1&&n<=4) document.getElementById('skill'+(n-1))?.click();
+});
+</script>
+</body>
+</html>

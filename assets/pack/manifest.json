@@ -1,0 +1,256 @@
+{
+  "version": 3,
+  "origin": "Modelagem local por código, sem modelos externos",
+  "characters": [
+    "luli",
+    "folfonaro",
+    "nair",
+    "assessor",
+    "estagiario",
+    "tio"
+  ],
+  "clips": {
+    "idle": {
+      "duration": 2,
+      "body": [
+        [
+          0,
+          0
+        ],
+        [
+          0.5,
+          0.025
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1.5,
+          -0.015
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    },
+    "walk": {
+      "duration": 0.65,
+      "stride": 0.58,
+      "amplitude": 0.5
+    },
+    "run": {
+      "duration": 0.48,
+      "stride": 0.95,
+      "amplitude": 0.8
+    },
+    "attack": {
+      "duration": 0.55,
+      "windup": 0.18,
+      "strike": 0.11,
+      "recovery": 0.26
+    },
+    "skill": {
+      "duration": 0.65
+    },
+    "guard": {
+      "duration": 1
+    },
+    "dodge": {
+      "duration": 0.32
+    },
+    "hurt": {
+      "duration": 0.35
+    },
+    "death": {
+      "duration": 0.7
+    },
+    "victory": {
+      "duration": 1.4
+    },
+    "talk": {
+      "duration": 1.5
+    },
+    "operate": {
+      "duration": 1.2
+    }
+  },
+  "collision": "footprint dos props em X/Z; tamanho da arquitetura em X/Y/Z; posicionamento deve registrar obstáculo no jogo",
+  "variants": "variant inteiro estável muda distribuição da vegetação",
+  "license": "CC0-1.0",
+  "units": "meters",
+  "pivot": "ground-center",
+  "assets": {
+    "cabinet": {
+      "label": "Armário articulado",
+      "footprint": [
+        1.4,
+        0.65
+      ]
+    },
+    "console": {
+      "label": "Mesa de controle",
+      "footprint": [
+        1.6,
+        1
+      ]
+    },
+    "valve": {
+      "label": "Válvula de manutenção",
+      "footprint": [
+        1,
+        0.6
+      ]
+    },
+    "bench": {
+      "label": "Banco de madeira",
+      "footprint": [
+        2.4,
+        0.8
+      ]
+    },
+    "chair": {
+      "label": "Cadeira estofada",
+      "footprint": [
+        0.72,
+        0.8
+      ]
+    },
+    "desk": {
+      "label": "Mesa de expediente",
+      "footprint": [
+        2.4,
+        1.25
+      ]
+    },
+    "shelf": {
+      "label": "Estante de arquivo",
+      "footprint": [
+        2.6,
+        0.65
+      ]
+    },
+    "camera": {
+      "label": "Câmera de estúdio",
+      "footprint": [
+        1.4,
+        1.4
+      ]
+    },
+    "crate": {
+      "label": "Caixa de transporte",
+      "footprint": [
+        1.2,
+        1
+      ]
+    },
+    "coffeeCart": {
+      "label": "Carrinho de café",
+      "footprint": [
+        1.4,
+        0.75
+      ]
+    },
+    "planter": {
+      "label": "Vaso de folhagem",
+      "footprint": [
+        0.8,
+        0.8
+      ]
+    },
+    "lamp": {
+      "label": "Poste de praça",
+      "footprint": [
+        0.5,
+        0.5
+      ]
+    },
+    "tree": {
+      "label": "Árvore de copa irregular",
+      "footprint": [
+        3.2,
+        3.2
+      ]
+    }
+  },
+  "architecture": {
+    "ramp": {
+      "name": "Rampa 3 × 6 m",
+      "size": [
+        3,
+        1.5,
+        6
+      ]
+    },
+    "wall": {
+      "name": "Parede 3 m",
+      "size": [
+        3,
+        3,
+        0.22
+      ]
+    },
+    "corner": {
+      "name": "Canto interno",
+      "size": [
+        3,
+        3,
+        3
+      ]
+    },
+    "door": {
+      "name": "Porta articulada",
+      "size": [
+        1.4,
+        2.5,
+        0.2
+      ]
+    },
+    "window": {
+      "name": "Janela de expediente",
+      "size": [
+        2.4,
+        1.4,
+        0.15
+      ]
+    },
+    "floor": {
+      "name": "Piso 3 × 3",
+      "size": [
+        3,
+        0.18,
+        3
+      ]
+    },
+    "stairs": {
+      "name": "Escada 6 degraus",
+      "size": [
+        2,
+        1.2,
+        3
+      ]
+    },
+    "railing": {
+      "name": "Corrimão 3 m",
+      "size": [
+        3,
+        1.1,
+        0.12
+      ]
+    },
+    "column": {
+      "name": "Coluna de concreto",
+      "size": [
+        0.45,
+        3,
+        0.45
+      ]
+    }
+  },
+  "exports": [
+    "Three JSON",
+    "GLB 2.0"
+  ],
+  "glbNote": "Materiais PBR de cor sólida; texturas procedurais disponíveis no runtime local."
+}
